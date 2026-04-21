@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* ========================= */
+/* 🌌 ESTILO GLOBAL BASE */
+/* ========================= */
+
+body {
+  background-color: #050816;
+  color: #EAF4FF;
+  font-family: system-ui, sans-serif;
+}
+
+/* ========================= */
+/* ✨ GLOW FUTURISTA (CARDS) */
+/* ========================= */
+
+.card-glow {
+  background: #0B1220;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #1B2A3A;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-glow:hover {
+  transform: scale(1.03);
+  box-shadow:
+    0 0 10px #00D4FF33,
+    0 0 20px #00D4FF22,
+    0 0 30px #00D4FF11;
+}
+
+/* Línea animada sutil */
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, transparent, #00D4FF55, transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.card-glow:hover::before {
+  opacity: 1;
+}
+
+/* ========================= */
+/* 🧠 BOTONES FUTURISTAS */
+/* ========================= */
+
+.btn-glow {
+  background: #00D4FF;
+  color: black;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 15px #00D4FF88;
+  transform: translateY(-1px);
+}
+
+html {
+  scroll-behavior: smooth;
+}
