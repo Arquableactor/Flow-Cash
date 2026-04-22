@@ -1,6 +1,6 @@
 const createTransaction = async (req, res, next) => {
   try {
-    const { description, amount, type, category } = req.body;
+    let { description, amount, type, category } = req.body;
 
     if (!description || !amount || !type || !category) {
       return res.status(400).json({
@@ -12,31 +12,52 @@ const createTransaction = async (req, res, next) => {
     const typeMap = {
       Ingreso: "income",
       Gasto: "expense",
+      income: "income",
+      expense: "expense",
     };
 
     const categoryMap = {
       Comida: "food",
       Transporte: "transport",
       Entretenimiento: "entertainment",
-      Salud: "health",
-      Educación: "education",
-      Compras: "shopping",
       Otros: "other",
+      food: "food",
+      transport: "transport",
+      entertainment: "entertainment",
+      other: "other",
     };
 
+    const finalType = typeMap[type];
+    const finalCategory = categoryMap[category];
+
+    if (!finalType || !finalCategory) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid type or category",
+      });
+    }
+
+    const parsedAmount = Number(amount);
+
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid amount",
+      });
+    }
+
     const transaction = await Transaction.create({
-      title: description,
-      description,
-      amount: Number(amount),
-      type: typeMap[type] || type,
-      category: categoryMap[category] || "other",
+      title: description.trim(),
+      description: description.trim(),
+      amount: parsedAmount,
+      type: finalType,
+      category: finalCategory,
       date: new Date(),
       paymentMethod: "cash",
     });
 
     res.status(201).json({
       success: true,
-      message: "Transaction created successfully",
       data: transaction,
     });
   } catch (error) {
