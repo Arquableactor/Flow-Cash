@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Valores permitidos
 const allowedTypes = ["income", "expense"];
 
 const allowedPaymentMethods = ["cash", "card", "transfer"];
@@ -23,55 +22,46 @@ const transactionSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Title is required"],
-      minlength: [3, "Title must be at least 3 characters"],
+      required: false,
+      minlength: 3,
+      trim: true,
+    },
+
+    description: {
+      type: String,
+      required: true, 
+      maxlength: 200,
       trim: true,
     },
 
     type: {
       type: String,
-      required: [true, "Type is required"],
-      enum: {
-        values: allowedTypes,
-        message: 'Type must be either "income" or "expense"',
-      },
+      required: true,
+      enum: allowedTypes,
     },
 
     amount: {
       type: Number,
-      required: [true, "Amount is required"],
-      min: [0.01, "Amount must be greater than 0"],
+      required: true,
+      min: 0.01,
     },
 
     category: {
       type: String,
-      required: [true, "Category is required"],
-      enum: {
-        values: allowedCategories,
-        message: "Invalid category value",
-      },
-      trim: true,
+      required: true,
+      enum: allowedCategories,
+      default: "other", 
     },
 
     date: {
       type: Date,
-      required: [true, "Date is required"],
-    },
-
-    description: {
-      type: String,
-      maxlength: [200, "Description cannot exceed 200 characters"],
-      trim: true,
-      default: "",
+      default: Date.now,
     },
 
     paymentMethod: {
       type: String,
-      required: [true, "Payment method is required"],
-      enum: {
-        values: allowedPaymentMethods,
-        message: 'Payment method must be "cash", "card" or "transfer"',
-      },
+      enum: allowedPaymentMethods,
+      default: "cash",
     },
   },
   {

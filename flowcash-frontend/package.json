@@ -14,6 +14,7 @@
     "@tanstack/react-query": "^5.99.2",
     "apexcharts": "^5.10.6",
     "axios": "^1.15.1",
+    "cors": "^2.8.6",
     "framer-motion": "^12.38.0",
     "react": "^19.2.5",
     "react-apexcharts": "^2.1.0",
