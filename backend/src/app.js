@@ -8,12 +8,8 @@ const errorMiddleware = require("./middleware/error.middleware");
 
 const app = express();
 
-// CORS
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-  })
-);
+// ✅ CORS (abierto para evitar errores en desarrollo/entrega)
+app.use(cors());
 
 // Middlewares globales
 app.use(morgan("dev"));
