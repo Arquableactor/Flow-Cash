@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getTransactions } from "../services/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getTransactions, createTransaction } from "../services/api";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -11,8 +11,8 @@ import IncomeVsExpenseChart from "../components/charts/IncomeVsExpenseChart";
 import TransactionList from "../components/transactions/TransactionList";
 import TransactionFilter from "../components/transactions/TransactionFilter";
 import AnimatedNumber from "../components/ui/AnimatedNumber";
+import Modal from "../components/ui/Modal";
 
-// Variants
 const container = {
   hidden: {},
   show: {
@@ -34,13 +34,19 @@ const item = {
 export default function Dashboard() {
   const [filter, setFilter] = useState("all");
 
-  // 🔥 React Query
+  const [isOpen, setIsOpen] = useState(false);
+  const [description, setDescription] = useState("");
+  const [amount, setAmount] = useState("");
+  const [type, setType] = useState("");
+  const [category, setCategory] = useState("");
+
+  const queryClient = useQueryClient();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["transactions"],
     queryFn: getTransactions,
   });
 
-  // 🔥 Estados de carga
   if (isLoading) {
     return (
       <DashboardLayout>
@@ -57,16 +63,13 @@ export default function Dashboard() {
     );
   }
 
-  // 🔥 Datos reales
   const transactions = data || [];
 
-  // 🔥 Filtro
   const filteredTransactions =
     filter === "all"
       ? transactions
       : transactions.filter((tx) => tx.type === filter);
 
-  // 🔥 Cálculos
   const totalIncome = transactions
     .filter((tx) => tx.type === "income")
     .reduce((acc, tx) => acc + tx.amount, 0);
@@ -77,9 +80,40 @@ export default function Dashboard() {
 
   const balance = totalIncome - totalExpense;
 
+  const handleSubmit = async () => {
+    try {
+      await createTransaction({
+        description,
+        amount,
+        type,
+        category,
+      });
+
+      queryClient.invalidateQueries(["transactions"]);
+
+      setIsOpen(false);
+      setDescription("");
+      setAmount("");
+      setType("");
+      setCategory("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <motion.div variants={container} initial="hidden" animate="show">
+
+        {/* BOTÓN */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={() => setIsOpen(true)}
+            className="bg-cyan-500 text-black px-4 py-2 rounded-lg"
+          >
+            + Nueva transacción
+          </button>
+        </div>
 
         {/* CARDS */}
         <div className="grid grid-cols-3 gap-6">
@@ -126,6 +160,57 @@ export default function Dashboard() {
         </motion.div>
 
       </motion.div>
+
+      {/* MODAL */}
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <h2 className="text-white text-lg mb-4">Nueva Transacción</h2>
+
+        <input
+          type="text"
+          placeholder="Descripción"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full mb-3 p-2 bg-[#0B1220] text-white"
+        />
+
+        <input
+          type="number"
+          placeholder="Monto"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-full mb-3 p-2 bg-[#0B1220] text-white"
+        />
+
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="w-full mb-3 p-2 bg-[#0B1220] text-white"
+        >
+          <option value="">Tipo</option>
+          <option value="Ingreso">Ingreso</option>
+          <option value="Gasto">Gasto</option>
+        </select>
+
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="w-full mb-3 p-2 bg-[#0B1220] text-white"
+        >
+          <option value="">Categoría</option>
+          <option value="Comida">Comida</option>
+          <option value="Transporte">Transporte</option>
+          <option value="Entretenimiento">Entretenimiento</option>
+          <option value="Otros">Otros</option>
+        </select>
+
+        <button
+          onClick={handleSubmit}
+          className="w-full bg-cyan-500 text-black py-2 rounded-lg"
+        >
+          Guardar
+        </button>
+      </Modal>
+
     </DashboardLayout>
   );
 }
