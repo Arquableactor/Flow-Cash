@@ -72,7 +72,7 @@ export default function Transactions() {
     <DashboardLayout>
       <h2 className="text-xl mb-4">Página de Transacciones</h2>
 
-      <TransactionFilter filters={filters} setFilters={setFilters} />
+      <TransactionFilter onFilter={setFilters} />
 
       <TransactionList
         transactions={filteredTransactions}
