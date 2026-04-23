@@ -1,14 +1,33 @@
 import Chart from "react-apexcharts";
 
-export default function IncomeVsExpenseChart() {
+export default function IncomeVsExpenseChart({ transactions = [] }) {
+
+  if (!transactions || transactions.length === 0) {
+    return (
+      <div className="bg-[#0B1220] p-6 rounded-xl border border-[#1B2A3A]">
+        <h3 className="mb-4 text-[#A5B5BF]">Ingresos vs Gastos</h3>
+        <p className="text-[#A5B5BF]">No hay datos suficientes</p>
+      </div>
+    );
+  }
+
+  const income = transactions
+    .filter((tx) => tx.type === "income")
+    .reduce((acc, tx) => acc + tx.amount, 0);
+
+  const expense = transactions
+    .filter((tx) => tx.type === "expense")
+    .reduce((acc, tx) => acc + tx.amount, 0);
+
   const options = {
     chart: {
       type: "bar",
-      toolbar: { show: false }
+      toolbar: { show: false },
+      background: "transparent"
     },
     colors: ["#00E6A8", "#FF6B6B"],
     xaxis: {
-      categories: ["Semana 1", "Semana 2", "Semana 3", "Semana 4"],
+      categories: ["Total"],
       labels: {
         style: {
           colors: "#A5B5BF"
@@ -28,11 +47,11 @@ export default function IncomeVsExpenseChart() {
   const series = [
     {
       name: "Ingresos",
-      data: [200, 400, 300, 500]
+      data: [income]
     },
     {
       name: "Gastos",
-      data: [150, 300, 250, 400]
+      data: [expense]
     }
   ];
 

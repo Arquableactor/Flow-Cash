@@ -1,6 +1,48 @@
 import Chart from "react-apexcharts";
 
-export default function MonthlyFlowChart() {
+export default function MonthlyFlowChart({ transactions = [] }) {
+
+  if (!transactions || transactions.length === 0) {
+    return (
+      <div className="bg-[#0B1220] p-6 rounded-xl border border-[#1B2A3A]">
+        <h3 className="mb-4 text-[#A5B5BF]">Flujo mensual</h3>
+        <p className="text-[#A5B5BF]">No hay datos suficientes</p>
+      </div>
+    );
+  }
+
+  const monthlyData = {};
+
+  transactions.forEach((tx) => {
+    const date = new Date(tx.date);
+
+    const key = `${date.getFullYear()}-${date.getMonth()}`; // clave única
+    const label = date.toLocaleString("default", { month: "short" });
+
+    if (!monthlyData[key]) {
+      monthlyData[key] = {
+        label,
+        income: 0,
+        expense: 0,
+      };
+    }
+
+    if (tx.type === "income") {
+      monthlyData[key].income += tx.amount;
+    } else {
+      monthlyData[key].expense += tx.amount;
+    }
+  });
+
+  // 🔥 ordenar cronológicamente
+  const sortedMonths = Object.keys(monthlyData).sort(
+    (a, b) => new Date(a) - new Date(b)
+  );
+
+  const labels = sortedMonths.map((key) => monthlyData[key].label);
+  const incomeData = sortedMonths.map((key) => monthlyData[key].income);
+  const expenseData = sortedMonths.map((key) => monthlyData[key].expense);
+
   const options = {
     chart: {
       type: "area",
@@ -15,7 +57,7 @@ export default function MonthlyFlowChart() {
     },
     colors: ["#00D4FF", "#FF6B6B"],
     xaxis: {
-      categories: ["Ene", "Feb", "Mar", "Abr", "May", "Jun"],
+      categories: labels,
       labels: {
         style: {
           colors: "#A5B5BF"
@@ -42,11 +84,11 @@ export default function MonthlyFlowChart() {
   const series = [
     {
       name: "Ingresos",
-      data: [500, 800, 600, 900, 1200, 1000]
+      data: incomeData
     },
     {
       name: "Gastos",
-      data: [300, 400, 500, 600, 700, 650]
+      data: expenseData
     }
   ];
 
