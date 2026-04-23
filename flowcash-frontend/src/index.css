@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-/* ========================= */
-/* 🌌 ESTILO GLOBAL BASE */
-/* ========================= */
+
 
 body {
   background-color: #050816;
@@ -10,9 +8,6 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-/* ========================= */
-/* ✨ GLOW FUTURISTA (CARDS) */
-/* ========================= */
 
 .card-glow {
   background: #0B1220;
@@ -32,7 +27,6 @@ body {
     0 0 30px #00D4FF11;
 }
 
-/* Línea animada sutil */
 .card-glow::before {
   content: "";
   position: absolute;
@@ -47,9 +41,7 @@ body {
   opacity: 1;
 }
 
-/* ========================= */
-/* 🧠 BOTONES FUTURISTAS */
-/* ========================= */
+
 
 .btn-glow {
   background: #00D4FF;

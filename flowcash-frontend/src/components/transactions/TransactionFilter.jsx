@@ -13,7 +13,7 @@ export default function TransactionFilter({ onFilter }) {
   return (
     <div className="bg-[#050816] p-4 rounded-xl border border-[#1B2A3A] mb-4 flex flex-wrap gap-4 items-center">
 
-      {/* 🔍 BUSCADOR */}
+      {/*  BUSCADOR */}
       <input
         type="text"
         placeholder="Buscar..."
@@ -26,7 +26,7 @@ export default function TransactionFilter({ onFilter }) {
         className="px-3 py-2 bg-[#0B1220] text-white rounded w-48"
       />
 
-      {/* 🎯 FILTRO TIPO */}
+      {/*  FILTRO TIPO */}
       <div className="flex gap-2">
         <button
           onClick={() => {
@@ -65,7 +65,7 @@ export default function TransactionFilter({ onFilter }) {
         </button>
       </div>
 
-      {/* 📂 FILTRO CATEGORÍA */}
+      {/*  FILTRO CATEGORÍA */}
       <select
         value={category}
         onChange={(e) => {
@@ -82,7 +82,7 @@ export default function TransactionFilter({ onFilter }) {
         <option value="other">Otros</option>
       </select>
 
-      {/* 🧼 RESET */}
+      {/*  RESET */}
       <button
         onClick={() => {
           setSearch("");
