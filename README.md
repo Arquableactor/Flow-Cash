@@ -1,3 +1,3 @@
 # El-repo-del-colab
 
-Vamo a divertirnos con deivy
+Vamo en serio ahora
