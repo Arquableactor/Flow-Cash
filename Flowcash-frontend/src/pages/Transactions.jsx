@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { getTransactions } from "../services/api";
+import { getTransactions, deleteTransaction } from "../services/api";
 
 import DashboardLayout from "../components/layout/DashboardLayout";
 import TransactionList from "../components/transactions/TransactionList";
@@ -14,10 +14,27 @@ export default function Transactions() {
     category: "all",
   });
 
+  const queryClient = useQueryClient();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["transactions"],
     queryFn: getTransactions,
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransaction,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["transactions"]);
+    },
+  });
+
+  const handleDelete = (id) => {
+    deleteMutation.mutate(id);
+  };
+
+  const handleEdit = (tx) => {
+    console.log("Editar:", tx);
+  };
 
   if (isLoading) {
     return (
@@ -55,9 +72,13 @@ export default function Transactions() {
     <DashboardLayout>
       <h2 className="text-xl mb-4">Página de Transacciones</h2>
 
-      <TransactionFilter onFilter={setFilters} />
+      <TransactionFilter filters={filters} setFilters={setFilters} />
 
-      <TransactionList transactions={filteredTransactions} />
+      <TransactionList
+        transactions={filteredTransactions}
+        onDelete={handleDelete}
+        onEdit={handleEdit}
+      />
     </DashboardLayout>
   );
 }
